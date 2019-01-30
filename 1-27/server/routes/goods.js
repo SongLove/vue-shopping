@@ -8,7 +8,7 @@ let User = require('../models/user');
 // 连接mongodb数据库
 // 在数据库创建了密码的情况下
 // mongoose.connect('mongodb://root:123456@127.0.0.1:27017/demo');
-mongoose.connect('mongodb://127.0.0.1:27017/demo');
+mongoose.connect('mongodb://127.0.0.1:27017/shopping');
 // 连接mongodb数据库成功
 mongoose.connection.on('connected', function () {
   console.log('MongoDB connected success.')
@@ -23,7 +23,7 @@ mongoose.connection.on('disconnected', function () {
 });
 
 // 查询商品列表
-router.get('/', function (request, response, next) {
+router.get('/list', function (request, response, next) {
   let page = request.param('page') - 0;
   let pageSize = request.param('pageSize') - 0;
   // request.param 可以获取到前端传过来的参数
@@ -55,6 +55,7 @@ router.get('/', function (request, response, next) {
   // 调用模型的sort 排序方法
   goodsModel.sort({ 'salePrice': sort });
   goodsModel.exec(function (err, doc) {
+    console.log(doc, 'goodsItem')
     if (err) {
       response.json({
         status: '0',

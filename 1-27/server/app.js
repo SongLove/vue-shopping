@@ -15,6 +15,24 @@ app.set('views', path.join(__dirname,  'views'));
 app.engine('.html', ejs.__express);
 app.set('view engine', 'html');
 
+// 接口拦截
+app.use(function (req, res, next) {
+  // 如果userId 存在 将不拦截
+  if (req.cookies.userId) {
+    next();
+  } else {
+    // req.originalUrl 请求完整地址
+    if (req.originalUrl == '/users/login' || req.originalUrl == '/users/logout' || res.path.indexOf('/goods/list') > -1) {
+      next();
+    } else {
+      res.json({
+        status: '0',
+        msg: '当前未登录',
+        result: ''
+      })
+    }
+  }
+})
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
