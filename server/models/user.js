@@ -16,7 +16,14 @@ let userSchema = new Schema({
     'checked': String,
     'productNum': String
   }],
-  'addressList': Array
+  'addressList': [{
+    'addressId' : String,
+    'userName' : String,
+    'streetName' : String,
+    'postCode' : Number,
+    'tel' : Number,
+    'isDefault' : Boolean
+  }]
 });
 
 // 输出 为Good 的表模型

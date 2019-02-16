@@ -198,6 +198,7 @@ export default {
         console.log(res);
         if (res.status == "1") {
           this.mdShowCart = true;
+          this.$store.commit('updataCartCount', 1)
         } else {
           this.mdShow = true;
         }

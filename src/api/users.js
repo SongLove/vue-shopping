@@ -56,3 +56,38 @@ export function userAddressList() {
       return Promise.resolve(res.data)
   })
 }
+
+// 删除收货地址
+export function delUserAddress(param) {
+  return axios.post('/users/delAddress', param).then((res) => {
+      return Promise.resolve(res.data)
+  })
+}
+
+// 设置默认地址
+export function setDefault(param) {
+  return axios.post('/users/setDefault', param).then((res) => {
+      return Promise.resolve(res.data)
+  })
+}
+
+// 生成订单
+export function payMent(param) {
+  return axios.post('/users/payMent', param).then((res) => {
+      return Promise.resolve(res.data)
+  })
+}
+
+// 查询订单
+export function orderDetail(param) {
+  return axios.get('/users/orderDetail', {params: param}).then((res) => {
+      return Promise.resolve(res.data)
+  })
+}
+
+// 查询订单数量
+export function getCartCount() {
+  return axios.get('/users/getCartCount').then((res) => {
+      return Promise.resolve(res.data)
+  })
+}

@@ -18,7 +18,6 @@
           <li><span>Order</span> confirmation</li>
         </ul>
       </div>
-
       <!-- address list -->
       <div class="page-title-normal checkout-title">
         <h2><span>Shipping address</span></h2>
@@ -26,21 +25,29 @@
       <div class="addr-list-wrap">
         <div class="addr-list">
           <ul>
-            <li v-for="(item, index) in addressList" :key="index">
+            <li v-for="(item, index) in addressListFilter"
+            :key="index"
+            :class="{'check' : checkIndex == index}"
+            @click="checkIndex=index;selectedAddrId=item.addressId"
+            >
               <dl>
                 <dt>{{item.userName}}</dt>
                 <dd class="address">{{item.streetName}}</dd>
                 <dd class="tel">{{item.tel}}</dd>
               </dl>
-              <div class="addr-opration addr-del">
+              <div class="addr-opration addr-del" @click="sendDelAddress(item.addressId)">
                 <a href="javascript:;" class="addr-del-btn">
                   <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                 </a>
               </div>
               <div class="addr-opration addr-set-default">
-                <a href="javascript:;" class="addr-set-default-btn"><i>Set default</i></a>
+                <a href="javascript:;"
+                class="addr-set-default-btn"
+                v-if="!item.isDefault"
+                @click="setDefault(item.addressId)"
+                ><i>Set default</i></a>
               </div>
-              <div class="addr-opration addr-default">Default address</div>
+              <div class="addr-opration addr-default" v-if="item.isDefault">Default address</div>
             </li>
             <li class="addr-new">
               <div class="add-new-inner">
@@ -54,7 +61,9 @@
         </div>
 
         <div class="shipping-addr-more">
-          <a class="addr-more-btn up-down-btn" href="javascript:;">
+          <a :class="{'open' : limit > 3}"
+             @click="expand"
+             class="addr-more-btn up-down-btn" href="javascript:;">
             more
             <i class="i-up-down">
               <i class="i-up-down-l"></i>
@@ -85,10 +94,17 @@
         </div>
       </div>
       <div class="next-btn-wrap">
-        <a class="btn btn--m btn--red">Next</a>
+        <a class="btn btn--m btn--red" @click="goOrder">Next</a>
       </div>
     </div>
   </div>
+  <modal :mdShow="mdShowdelAddress" @close="mdShowdelAddress=false">
+    <p slot="message">你确定要删除此地址吗？</p>
+     <div slot="btnGroup">
+        <a @click="delAddress" class="btn btn--m">确定</a>
+        <a @click="mdShowdelAddress=false" class="btn btn--m">取消</a>
+      </div>
+  </modal>
   <nav-footer/>
 </div>
 </template>
@@ -102,26 +118,81 @@ import NavHeader from "@/components/NavHeader";
 import NavFooter from "@/components/NavFooter";
 import NavBase from "@/components/NavBase";
 import Modal from "@/components/Modal";
-import { userAddressList } from 'api/users'
+import { userAddressList, delUserAddress, setDefault } from 'api/users'
 export default {
   name: 'Address',
   data() {
     return {
-      addressList: []
+      addressList: [],
+      limit: 3,
+      mdShowdelAddress: false,
+      selectedAddrId: '',
+      addressId: '',
+      checkIndex: 0,
     }
   },
   methods: {
-    getAddressList() {
-      userAddressList().then((res) => {
+    goOrder() {
+       this.$router.push({
+          path: '/orderConfirm',
+          query: {selectedAddrId: this.selectedAddrId}
+        })
+    },
+    setDefault(addressId) { // 设置默认地址
+      setDefault({addressId: addressId}).then((res) => {
         console.log(res)
         if (res.status == '1') {
-          this.addressList = res.result
+          //alert(res.result);
+          this.checkIndex = 0;
+          this.getAddressList();
         }
       })
+    },
+    expand() { // 展开
+      if (this.limit == 3) {
+        this.limit = this.addressList.length
+      } else {
+        this.limit = 3
+      }
+    },
+    getAddressList() {
+      userAddressList().then((res) => {
+        console.log(res);
+        if (res.status == '1') {
+          this.addressList = res.result.sort(this.compare('isDefault'));
+          this.selectedAddrId = this.addressList[0].addressId;
+          console.log('this.addressList', this.addressList)
+        }
+      })
+    },
+    compare(item) {
+      return (a) => {
+        let value1 = a[item];
+        return value1 ? -1 : 1
+      }
+    },
+    delAddress() {
+      console.log('this.addressId', this.addressId)
+      delUserAddress({addressId: this.addressId}).then((res) => {
+        if (res.status == '1') {
+          //alert('删除成功')
+          this.getAddressList();
+          this.mdShowdelAddress = false;
+        }
+      })
+    },
+    sendDelAddress(id) {
+      this.addressId = id;
+      this.mdShowdelAddress = true;
+    }
+  },
+  computed:{
+    addressListFilter() {
+      return this.addressList.slice(0, this.limit);
     }
   },
   mounted() {
-    this.getAddressList()
+    this.getAddressList();
   },
   components: {
     NavHeader,

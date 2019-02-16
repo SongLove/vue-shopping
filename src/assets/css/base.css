@@ -407,7 +407,8 @@ table {
   font-family: "akkurat";
   font-style: normal;
   font-weight: 200;
-  src: url("http://s3s.lecloud.com/lemallus/20160706-2a59a31b-d37f-401d-855c-974e1b97c9f0.eot?#iefix") format("embedded-opentype"), url("http://s3s.lecloud.com/lemallus/20160706-d3526e75-0939-4fc3-b0a4-ae16ee843fe2.woff") format("woff"), url("http://s3s.lecloud.com/lemallus/20160706-41e57e14-66ab-4885-95ad-7aabd891cf08.ttf") format("truetype"), url("http://s3s.lecloud.com/lemallus/20160706-234d6fee-b42c-4372-b1e7-664c52e9d8cf.svg#akkurat light") format("svg");
+  src: url("http://s3s.lecloud.com/lemallus/20160706-2a59a31b-d37f-401d-855c-974e1b97c9f0.eot?#iefix") format("embedded-
+  type"), url("http://s3s.lecloud.com/lemallus/20160706-d3526e75-0939-4fc3-b0a4-ae16ee843fe2.woff") format("woff"), url("http://s3s.lecloud.com/lemallus/20160706-41e57e14-66ab-4885-95ad-7aabd891cf08.ttf") format("truetype"), url("http://s3s.lecloud.com/lemallus/20160706-234d6fee-b42c-4372-b1e7-664c52e9d8cf.svg#akkurat light") format("svg");
 }
 
 @font-face {

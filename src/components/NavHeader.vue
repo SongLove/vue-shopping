@@ -32,7 +32,7 @@
                 <a class="navbar-link" @click="lgoinModalFlag=true" v-show="!nickName">Login</a>
                 <a class="navbar-link" @click="logOut" v-show="nickName">Logout</a>
                 <div class="navbar-cart-container">
-                  <span class="navbar-cart-count"></span>
+                  <span v-if="cartCount > 0" class="navbar-cart-count">{{cartCount}}</span>
                   <a class="navbar-link navbar-cart-link" href="/#/cart">
                     <svg class="navbar-cart-logo">
                       <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
@@ -147,7 +147,8 @@ a {
 </style>
 <script>
 import "./../assets/css/login.css";
-import { userLogin, userLogOut, userCheckLogin } from "api/users";
+import { mapState } from 'vuex';
+import { userLogin, userLogOut, userCheckLogin, getCartCount } from "api/users";
 export default {
   data() {
     return {
@@ -156,8 +157,16 @@ export default {
       errorTip: false,
       lgoinModalFlag: false,
       loginHint: '',
-      nickName: '',
     };
+  },
+  computed: {
+   /*nickName() {
+      return this.$store.state.nickName
+    },
+    cartCount() {
+      return this.$store.state.cartCount
+    }*/
+    ...mapState(['nickName', 'cartCount'])
   },
   methods: {
     logOut() {
@@ -165,7 +174,9 @@ export default {
       userLogOut().then((response) =>{
         let res = response
         if (res.status == '1') {
-          this.nickName = '';
+          this.$store.commit('updataUserInfo', '')
+          this.$store.commit('initCartCount', 0)
+          //this.nickName = '';
         }
       });
     },
@@ -173,7 +184,8 @@ export default {
       userCheckLogin().then((res) => {
         console.log(res)
         if (res.status == '1') {
-          this.nickName = res.result
+         // this.nickName = res.result
+          this.$store.commit('updataUserInfo',  res.result)
         }
       })
     },
@@ -198,17 +210,24 @@ export default {
         console.log(res)
         if (res.status == "1") {
           this.errorTip = false;
-          this.nickName = res.result.userName;
+          this.$store.commit('updataUserInfo',   res.result.userName)
           this.lgoinModalFlag = false;
+          this.getCartCount();
         } else {
           this.errorTip = true;
            this.loginHint = res.msg
         }
       });
+    },
+    getCartCount() {
+      getCartCount().then((response) => {
+        this.$store.commit('initCartCount', response.result)
+      })
     }
   },
   mounted () {
-    this.checkLogin()
+    this.checkLogin();
+    this.getCartCount();
   }
 };
 </script>
