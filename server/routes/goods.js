@@ -8,7 +8,7 @@ let User = require('../models/user');
 // 连接mongodb数据库
 // 在数据库创建了密码的情况下
 // mongoose.connect('mongodb://root:123456@127.0.0.1:27017/demo');
-mongoose.connect('mongodb://127.0.0.1:27017/demo');
+mongoose.connect('mongodb://admin:520.mnbx@www.tanggeek.top/shopping?authSource=admin', {useNewUrlParser: true});
 // 连接mongodb数据库成功
 mongoose.connection.on('connected', function () {
   console.log('MongoDB connected success.')
